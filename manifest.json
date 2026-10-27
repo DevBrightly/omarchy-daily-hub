@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.devbrightly.daily-hub",
+  "name": "Daily Hub",
+  "version": "0.1.0",
+  "author": "DevBrightly",
+  "license": "MIT",
+  "description": "One calm daily panel for priorities, tasks, Pomodoro, reminders, day progress, and screen time.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Daily Hub",
+    "description": "Tasks, focus timer, reminders, and wellbeing in one panel",
+    "category": "Productivity",
+    "allowMultiple": false,
+    "defaultSection": "center",
+    "defaults": {
+      "dayStart": 8,
+      "dayEnd": 22,
+      "focusMinutes": 25,
+      "breakMinutes": 5,
+      "screenGoalHours": 8,
+      "showLabel": true
+    },
+    "schema": [
+      { "key": "dayStart", "type": "integer", "label": "Day starts", "min": 0, "max": 23, "step": 1, "defaultValue": 8 },
+      { "key": "dayEnd", "type": "integer", "label": "Day ends", "min": 1, "max": 24, "step": 1, "defaultValue": 22 },
+      { "key": "focusMinutes", "type": "integer", "label": "Focus minutes", "min": 5, "max": 90, "step": 5, "defaultValue": 25 },
+      { "key": "breakMinutes", "type": "integer", "label": "Break minutes", "min": 1, "max": 30, "step": 1, "defaultValue": 5 },
+      { "key": "screenGoalHours", "type": "integer", "label": "Screen-time guide (hours)", "min": 0, "max": 24, "step": 1, "defaultValue": 8 },
+      { "key": "showLabel", "type": "boolean", "label": "Show progress in bar", "defaultValue": true }
+    ]
+  }
+}
