@@ -20,6 +20,7 @@ Item {
   property bool ready: false
   property bool directoryReady: false
   property bool writePending: false
+  property bool initialReadComplete: false
   property double screenTimeMs: 0
   property var reminders: []
 
@@ -38,10 +39,13 @@ Item {
     stateFile.setText(JSON.stringify(dailyData, null, 2) + "\n")
   }
   function mutate(next) { dailyData = next; persist() }
-  function addTask(text, priority) { mutate(Model.addTask(dailyData, text, priority)) }
+  function addTask(text, priority, stage, description) { mutate(Model.addTask(dailyData, text, priority, stage, description)) }
   function toggleTask(id) { mutate(Model.toggleTask(dailyData, id)) }
   function removeTask(id) { mutate(Model.removeTask(dailyData, id)) }
   function togglePriority(id) { mutate(Model.togglePriority(dailyData, id)) }
+  function updateTask(id, text, description) { mutate(Model.updateTask(dailyData, id, text, description)) }
+  function moveTask(id, stage) { mutate(Model.moveTask(dailyData, id, stage)) }
+  function reorderTask(id, direction) { mutate(Model.reorderTask(dailyData, id, direction)) }
   function clearCompleted() { mutate(Model.clearCompleted(dailyData)) }
 
   function setFocusRunning(running) {
@@ -85,7 +89,12 @@ Item {
     }
   }
 
-  function adopt(raw) {
+  function refreshState() {
+    if (!directoryReady || stateReader.running) return
+    stateReader.running = true
+  }
+
+  function adopt(raw, persistMigration) {
     dailyData = Model.normalize(raw, todayKey, focusMinutes * 60)
     if (dailyData.focus.running && dailyData.focus.endAt > 0) {
       var next = cloneState()
@@ -93,7 +102,7 @@ Item {
       dailyData = next
     }
     ready = true
-    persist()
+    if (persistMigration) persist()
   }
 
   function refreshScreenTime() { screenReader.running = false; screenReader.running = true }
@@ -111,8 +120,17 @@ Item {
   } }
   Timer { interval: 30000; repeat: true; running: true; onTriggered: root.refreshReminders() }
   Timer { interval: 60000; repeat: true; running: true; onTriggered: root.refreshScreenTime() }
+  Timer { id: stateSync; interval: 80; repeat: false; onTriggered: root.refreshState() }
 
-  FileView { id: stateFile; path: root.statePath; preload: false; atomicWrites: true; printErrors: false }
+  FileView {
+    id: stateFile
+    path: root.statePath
+    preload: false
+    atomicWrites: true
+    watchChanges: true
+    printErrors: false
+    onFileChanged: if (root.initialReadComplete) stateSync.restart()
+  }
   FileView { path: root.screenPath; preload: false; watchChanges: true; printErrors: false; onFileChanged: root.refreshScreenTime() }
 
   Process {
@@ -124,7 +142,11 @@ Item {
     id: stateReader
     command: ["sh", "-c", "[ -e \"$1\" ] || exit 3; [ \"$(wc -c < \"$1\")\" -le 1048576 ] || exit 4; exec head -c 1048576 -- \"$1\"", "sh", root.statePath]
     stdout: StdioCollector { id: stateOut; waitForEnd: true }
-    onExited: function(code) { root.adopt(code === 0 ? stateOut.text : "") }
+    onExited: function(code) {
+      var firstRead = !root.initialReadComplete
+      root.adopt(code === 0 ? stateOut.text : "", firstRead)
+      root.initialReadComplete = true
+    }
   }
   Process {
     id: screenReader

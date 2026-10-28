@@ -2,12 +2,12 @@
 
 ## Tasks and daily planning
 
-- Big 3 priorities and regular daily tasks
-- Later/backlog list and Today/Later movement
-- automatic carry-over with carry counts
-- descriptions, editing, reordering, and reprioritization
+- [x] Big 3 priorities and regular daily tasks
+- [x] Later/backlog list and Today/Later movement
+- [x] automatic carry-over with carry counts
+- [x] descriptions, editing, reordering, and reprioritization
 - 14-day history, streaks, and lifetime totals
-- quick capture, search, and filtering
+- [x] quick capture, search, and filtering
 
 ## Focus
 

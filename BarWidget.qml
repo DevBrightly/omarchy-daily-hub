@@ -76,7 +76,7 @@ BarWidget {
         text: store.dailyData.focus.running ? "󰔟" : "󰄬"
         color: root.bar ? root.bar.barForeground : Color.foreground
         font.family: Style.font.icon
-        font.pixelSize: Style.bar.iconSize
+        font.pixelSize: Style.bar.iconSize || Style.font.body
       }
       Text {
         visible: root.showLabel && !root.vertical

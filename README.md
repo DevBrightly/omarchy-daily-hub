@@ -8,6 +8,9 @@ Daily Hub is currently under active development. Version `0.1.0` includes:
 
 - daily tasks and priority marking;
 - automatic carry-over of unfinished tasks;
+- a dedicated Big 3, Today list, and Later backlog;
+- task descriptions, editing, reordering, search, and filtering;
+- quick movement between Today and Later with visible carry counts;
 - a focus and break timer with desktop notifications;
 - native Omarchy reminder creation and status;
 - day and task progress;
@@ -31,7 +34,8 @@ not delete that file.
 Click the Daily Hub bar item to open the panel. Middle-click it to start or
 pause the timer. Inside the panel:
 
-- `a` focuses the task input;
+- `a` or `q` focuses the quick-add input;
+- `/` focuses task search;
 - `f` starts or pauses the timer;
 - `r` resets the current timer;
 - `c` clears completed tasks;
@@ -62,9 +66,14 @@ network requests.
 Validate the repository with:
 
 ```sh
+npm test
 omarchy plugin validate .
 qmllint -I "$OMARCHY_PATH/shell" BarWidget.qml Panel.qml Store.qml
 ```
+
+The dependency-free test suite covers state migration, Big 3 enforcement,
+Today/Later behavior, rollover, task editing and manifest integrity. GitHub
+Actions runs the same suite automatically for pushes and pull requests.
 
 See [ROADMAP.md](ROADMAP.md) for the planned task, focus, and project-management
 features.
