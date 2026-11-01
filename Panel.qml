@@ -40,6 +40,19 @@ Panel {
     if (task) editTitle.forceActiveFocus()
   }
 
+  function beginCapture(stage) {
+    addStage = stage
+    if (stage !== "today") addPriority = false
+    taskInput.forceActiveFocus()
+  }
+
+  function cycleCaptureStage() {
+    if (addStage === "today") addStage = "later"
+    else if (addStage === "later") addStage = "idea"
+    else addStage = "today"
+    if (addStage !== "today") addPriority = false
+  }
+
   function open() { controller.show() }
   function close() { controller.hide() }
   function toggle() { if (opened) close(); else open() }
@@ -65,7 +78,8 @@ Panel {
       onCloseRequested: root.close()
       onTabRequested: function(direction) { root.switchPanel(direction) }
       onTextKey: function(text) {
-        if (text === "a" || text === "q") taskInput.forceActiveFocus()
+        if (text === "a" || text === "q") root.beginCapture("today")
+        else if (text === "i") root.beginCapture("idea")
         else if (text === "/") taskSearch.forceActiveFocus()
         else if (text === "f" && root.store) root.store.toggleFocus()
         else if (text === "r" && root.store) root.store.resetFocus()
@@ -119,11 +133,12 @@ Panel {
 
         Row {
           width: parent.width; spacing: Style.space(8)
-          ActionButton { text: "Today"; glyph: "󰃭"; active: root.activeStage === "today"; onTriggered: root.activeStage = "today" }
-          ActionButton { text: "Later"; glyph: "󰥔"; active: root.activeStage === "later"; onTriggered: root.activeStage = "later" }
+          ActionButton { id: todayTab; text: "Today"; glyph: "󰃭"; active: root.activeStage === "today"; onTriggered: root.activeStage = "today" }
+          ActionButton { id: laterTab; text: "Later"; glyph: "󰥔"; active: root.activeStage === "later"; onTriggered: root.activeStage = "later" }
+          ActionButton { id: ideasTab; text: "Ideas"; glyph: "󰛨"; active: root.activeStage === "idea"; onTriggered: root.activeStage = "idea" }
           TextField {
             id: taskSearch
-            width: parent.width - Style.space(190)
+            width: parent.width - todayTab.width - laterTab.width - ideasTab.width - parent.spacing * 3
             foreground: root.fg; accent: root.accent
             placeholderText: "Search tasks…"
             onTextChanged: root.searchText = text
@@ -163,6 +178,17 @@ Panel {
           Text { visible: root.taskList("later", null).length === 0; text: root.searchText ? "No matching tasks." : "Your backlog is clear."; color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.48); font.family: root.family; font.pixelSize: Style.font.bodySmall }
         }
 
+        Column {
+          visible: root.activeStage === "idea"
+          width: parent.width; spacing: Style.space(4)
+          PanelSectionHeader { text: "IDEA INBOX"; foreground: root.fg; fontFamily: root.family }
+          Repeater {
+            model: root.taskList("idea", null)
+            TaskRow { required property var modelData; width: column.width; task: modelData }
+          }
+          Text { visible: root.taskList("idea", null).length === 0; text: root.searchText ? "No matching ideas." : "Capture now. Decide what it means later."; color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.48); font.family: root.family; font.pixelSize: Style.font.bodySmall }
+        }
+
         Rectangle {
           visible: root.editingTask !== null
           width: parent.width; implicitHeight: editorColumn.implicitHeight + Style.space(20)
@@ -194,7 +220,7 @@ Panel {
             id: taskInput
             width: parent.width - priorityButton.width - stageButton.width - parent.spacing * 2
             foreground: root.fg; accent: root.accent
-            placeholderText: root.addStage === "later" ? "Add to Later…" : (root.addPriority ? "Add a Big 3 priority…" : "Quick-add a task…")
+            placeholderText: root.addStage === "idea" ? "Capture an idea…" : (root.addStage === "later" ? "Add to Later…" : (root.addPriority ? "Add a Big 3 priority…" : "Quick-add a task…"))
             onAccepted: {
               if (root.store && text.trim()) root.store.addTask(text, root.addPriority, root.addStage, "")
               text = ""
@@ -203,7 +229,7 @@ Panel {
           Rectangle {
             id: priorityButton
             width: Style.space(42); height: taskInput.height; radius: Style.cornerRadius
-            opacity: root.addStage === "later" ? 0.35 : 1
+            opacity: root.addStage !== "today" ? 0.35 : 1
             color: root.addPriority ? Qt.rgba(root.accent.r, root.accent.g, root.accent.b, 0.22) : Style.hoverFillFor(root.fg, root.fg)
             border.width: 1; border.color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.15)
             Text { anchors.centerIn: parent; text: "★"; color: root.addPriority ? root.accent : Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.55); font.pixelSize: Style.font.body }
@@ -213,8 +239,8 @@ Panel {
             id: stageButton
             width: Style.space(42); height: taskInput.height; radius: Style.cornerRadius
             color: Style.hoverFillFor(root.fg, root.fg); border.width: 1; border.color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.15)
-            Text { anchors.centerIn: parent; text: root.addStage === "later" ? "󰥔" : "󰃭"; color: root.fg; font.family: Style.font.icon; font.pixelSize: Style.font.body }
-            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: { root.addStage = root.addStage === "later" ? "today" : "later"; if (root.addStage === "later") root.addPriority = false } }
+            Text { anchors.centerIn: parent; text: root.addStage === "idea" ? "󰛨" : (root.addStage === "later" ? "󰥔" : "󰃭"); color: root.fg; font.family: Style.font.icon; font.pixelSize: Style.font.body }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.cycleCaptureStage() }
           }
         }
 
@@ -244,7 +270,7 @@ Panel {
           Timer { id: reminderRefresh; interval: 500; onTriggered: if (root.store) root.store.refreshReminders() }
         }
 
-        Text { width: parent.width; text: "a/q quick-add · / search · f focus · r reset · c clear completed"; color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.38); font.family: root.family; font.pixelSize: Style.font.caption; elide: Text.ElideRight }
+        Text { width: parent.width; text: "a task · i idea · / search · f focus · r reset · c clear completed"; color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.38); font.family: root.family; font.pixelSize: Style.font.caption; elide: Text.ElideRight }
       }
     }
   }

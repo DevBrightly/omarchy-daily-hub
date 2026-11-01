@@ -9,6 +9,7 @@ Daily Hub is currently under active development. Version `0.1.0` includes:
 - daily tasks and priority marking;
 - automatic carry-over of unfinished tasks;
 - a dedicated Big 3, Today list, and Later backlog;
+- a low-friction idea inbox that can promote ideas into Later or Today;
 - task descriptions, editing, reordering, search, and filtering;
 - quick movement between Today and Later with visible carry counts;
 - a focus and break timer with desktop notifications;
@@ -35,6 +36,7 @@ Click the Daily Hub bar item to open the panel. Middle-click it to start or
 pause the timer. Inside the panel:
 
 - `a` or `q` focuses the quick-add input;
+- `i` opens quick capture directly in the idea inbox;
 - `/` focuses task search;
 - `f` starts or pauses the timer;
 - `r` resets the current timer;

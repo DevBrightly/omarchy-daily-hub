@@ -19,7 +19,7 @@ function clone(value) { return JSON.parse(JSON.stringify(value)) }
 
 function emptyState(date, focusSeconds) {
   return {
-    version: 2,
+    version: 3,
     date: date,
     tasks: [],
     focus: { mode: "focus", remaining: focusSeconds, running: false, endAt: 0, sessions: 0 },
@@ -35,7 +35,7 @@ function normalizeTask(task, index) {
     description: clean(source.description, 1000),
     done: source.done === true,
     priority: source.priority === true,
-    stage: source.stage === "later" ? "later" : "today",
+    stage: source.stage === "later" ? "later" : (source.stage === "idea" ? "idea" : "today"),
     carried: Math.max(0, Number(source.carried) || 0),
     order: isFinite(Number(source.order)) ? Number(source.order) : index,
     createdAt: Math.max(0, Number(source.createdAt) || Date.now()),
@@ -47,7 +47,7 @@ function normalize(raw, date, focusSeconds) {
   var parsed
   try { parsed = raw ? JSON.parse(raw) : null } catch (e) { parsed = null }
   if (!parsed || typeof parsed !== "object") return emptyState(date, focusSeconds)
-  parsed.version = 2
+  parsed.version = 3
   parsed.tasks = (Array.isArray(parsed.tasks) ? parsed.tasks : []).map(normalizeTask)
   parsed.archive = parsed.archive && typeof parsed.archive === "object" ? parsed.archive : {}
   parsed.focus = parsed.focus && typeof parsed.focus === "object" ? parsed.focus : {}
@@ -78,7 +78,7 @@ function rollDay(state, date, focusSeconds) {
   }
   next.date = date
   next.tasks = state.tasks.filter(function(task) {
-    return task.stage === "later" || !task.done
+    return task.stage === "later" || task.stage === "idea" || !task.done
   }).map(function(task, index) {
     var normalized = normalizeTask(task, index)
     normalized.done = false
@@ -100,7 +100,7 @@ function addTask(state, text, priority, stage, description) {
   var value = clean(text)
   if (!value) return state
   var next = clone(state)
-  var target = stage === "later" ? "later" : "today"
+  var target = stage === "later" ? "later" : (stage === "idea" ? "idea" : "today")
   var isPriority = priority === true && target === "today" && priorityCount(next.tasks) < 3
   next.tasks.push({
     id: uid(), text: value, description: clean(description, 1000), done: false,
@@ -147,14 +147,14 @@ function updateTask(state, id, text, description) {
 }
 
 function moveTask(state, id, stage) {
-  var target = stage === "later" ? "later" : "today"
+  var target = stage === "later" ? "later" : (stage === "idea" ? "idea" : "today")
   var next = clone(state)
   next.tasks.forEach(function(task) {
     if (task.id !== id) return
     task.stage = target
     task.done = false
     task.completedAt = 0
-    if (target === "later") task.priority = false
+    if (target !== "today") task.priority = false
   })
   return next
 }
@@ -186,7 +186,7 @@ function clearCompleted(state) {
 }
 
 function stats(tasks) {
-  var list = (Array.isArray(tasks) ? tasks : []).filter(function(task) { return task.stage !== "later" })
+  var list = (Array.isArray(tasks) ? tasks : []).filter(function(task) { return task.stage === "today" })
   var done = 0
   var priorityTotal = 0
   var priorityDone = 0

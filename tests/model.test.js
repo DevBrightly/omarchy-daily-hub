@@ -18,7 +18,7 @@ test("migrates version 1 tasks without losing user data", () => {
 
   const state = model.normalize(JSON.stringify(legacy), DATE, FOCUS_SECONDS);
 
-  assert.equal(state.version, 2);
+  assert.equal(state.version, 3);
   assert.equal(state.tasks[0].id, "legacy");
   assert.equal(state.tasks[0].text, "Existing task");
   assert.equal(state.tasks[0].stage, "today");
@@ -69,6 +69,23 @@ test("carries unfinished Today tasks but not Later tasks", () => {
   assert.equal(rolled.archive[DATE].total, 1);
 });
 
+test("keeps ideas out of daily stats and preserves them across rollover", () => {
+  const model = loadModel();
+  let state = model.emptyState(DATE, FOCUS_SECONDS);
+  state = model.addTask(state, "Build workstation backup", true, "idea", "");
+
+  assert.equal(state.tasks[0].stage, "idea");
+  assert.equal(state.tasks[0].priority, false);
+  assert.equal(model.stats(state.tasks).total, 0);
+
+  const rolled = model.rollDay(state, NEXT_DATE, FOCUS_SECONDS);
+  assert.equal(rolled.tasks[0].stage, "idea");
+  assert.equal(rolled.tasks[0].carried, 0);
+
+  const promoted = model.moveTask(rolled, rolled.tasks[0].id, "later");
+  assert.equal(promoted.tasks[0].stage, "later");
+});
+
 test("archives completed Today tasks and removes them after rollover", () => {
   const model = loadModel();
   let state = model.addTask(model.emptyState(DATE, FOCUS_SECONDS), "Ship it", true, "today", "");
@@ -102,7 +119,7 @@ test("normalizes malformed persisted state safely", () => {
   const model = loadModel();
   const state = model.normalize("not json", DATE, FOCUS_SECONDS);
 
-  assert.equal(state.version, 2);
+  assert.equal(state.version, 3);
   assert.deepEqual(Array.from(state.tasks), []);
   assert.equal(state.focus.remaining, FOCUS_SECONDS);
 });
