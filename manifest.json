@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "io.github.devbrightly.daily-hub",
-  "name": "Daily Hub",
+  "id": "devbrightly.omarchy-daily-hub",
+  "name": "Omarchy Daily Hub",
   "version": "0.1.0",
   "author": "DevBrightly",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "Daily Hub",
+    "displayName": "Omarchy Daily Hub",
     "description": "Tasks, focus timer, reminders, and wellbeing in one panel",
     "category": "Productivity",
     "allowMultiple": false,

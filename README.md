@@ -1,10 +1,10 @@
-# Daily Hub for Omarchy
+# Omarchy Daily Hub
 
-A calm productivity panel for the Omarchy Quattro bar. Daily Hub brings daily
+A calm productivity panel for the Omarchy Quattro bar. Omarchy Daily Hub brings daily
 priorities, tasks, focus sessions, reminders, and day progress into one place
 while leaving specialist tools such as Screen Time and media controls separate.
 
-Daily Hub is currently under active development. Version `0.1.0` includes:
+Omarchy Daily Hub is currently under active development. Version `0.1.0` includes:
 
 - daily tasks and priority marking;
 - automatic carry-over of unfinished tasks;
@@ -23,16 +23,16 @@ Daily Hub is currently under active development. Version `0.1.0` includes:
 Once the first public release is available:
 
 ```sh
-omarchy plugin add https://github.com/DevBrightly/omarchy-daily-hub.git --enable
+omarchy plugin add https://github.com/DevBrightly/daily-hub.git --enable
 ```
 
-Daily Hub stores its local state in
+Omarchy Daily Hub stores its local state in
 `~/.local/share/br-daily-hub/state.json`. Removing or updating the plugin does
 not delete that file.
 
 ## Usage
 
-Click the Daily Hub bar item to open the panel. Middle-click it to start or
+Click the Omarchy Daily Hub bar item to open the panel. Middle-click it to start or
 pause the timer. Inside the panel:
 
 - `a` or `q` focuses the quick-add input;
@@ -49,13 +49,13 @@ Use **Setup → Bar** to configure the day boundaries, timer lengths, screen-tim
 guide, and bar label. The widget can also be moved with:
 
 ```sh
-omarchy bar move io.github.devbrightly.daily-hub --section center
+omarchy bar move devbrightly.omarchy-daily-hub --section center
 ```
 
 ## Remove
 
 ```sh
-omarchy plugin remove io.github.devbrightly.daily-hub
+omarchy plugin remove devbrightly.omarchy-daily-hub
 ```
 
 The plugin runs inside `omarchy-shell` with your user permissions, like all

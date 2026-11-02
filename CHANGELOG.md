@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Daily Hub will be documented in this file.
+All notable changes to Omarchy Daily Hub will be documented in this file.
 
 The project follows [Semantic Versioning](https://semver.org/), and this file
 uses the structure described by [Keep a Changelog](https://keepachangelog.com/).

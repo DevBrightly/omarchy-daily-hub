@@ -5,7 +5,7 @@ import "Model.js" as Model
 
 Panel {
   id: root
-  moduleName: "io.github.devbrightly.daily-hub"
+  moduleName: "devbrightly.omarchy-daily-hub"
   manageIpc: false
   property var anchorItem: null
   property var hostWidget: null

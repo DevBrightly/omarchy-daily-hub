@@ -8,7 +8,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "u
 
 test("manifest has the marketplace-required metadata", () => {
   assert.equal(manifest.schemaVersion, 1);
-  assert.equal(manifest.id, "io.github.devbrightly.daily-hub");
+  assert.equal(manifest.id, "devbrightly.omarchy-daily-hub");
   assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
 
   for (const field of ["name", "author", "description", "license"]) {
