@@ -32,16 +32,21 @@ not delete that file.
 
 ## Usage
 
-Click the Omarchy Daily Hub bar item to open the panel. Middle-click it to start or
-pause the timer. Inside the panel:
+Press `Super+Shift+Q` from any application to open or close Daily Hub, or click its
+bar item. Middle-click the bar item to start or pause the timer. Inside the panel:
 
-- `a` or `q` focuses the quick-add input;
-- `i` opens quick capture directly in the idea inbox;
+- `a` or `q` starts a Today-task capture;
+- `i` starts an Idea capture;
+- `Enter` saves a non-empty quick capture and closes the panel;
+- `Escape` discards a quick-capture draft and closes the panel;
 - `/` focuses task search;
 - `f` starts or pauses the timer;
 - `r` resets the current timer;
 - `c` clears completed tasks;
-- `Escape` closes the panel.
+- `Escape` closes the panel when not capturing.
+
+Closing Daily Hub by any route discards an unsaved quick-capture draft. Search,
+task editing, and reminder inputs keep their existing Enter behavior.
 
 ## Configure
 

@@ -46,6 +46,19 @@ Panel {
     taskInput.forceActiveFocus()
   }
 
+  function completeCapture() {
+    var capturedText = taskInput.text.trim()
+    if (!store || !capturedText) return
+    taskInput.text = ""
+    store.addTask(capturedText, addPriority, addStage, "")
+    close()
+  }
+
+  function cancelCapture() {
+    taskInput.text = ""
+    close()
+  }
+
   function cycleCaptureStage() {
     if (addStage === "today") addStage = "later"
     else if (addStage === "later") addStage = "idea"
@@ -54,7 +67,10 @@ Panel {
   }
 
   function open() { controller.show() }
-  function close() { controller.hide() }
+  function close() {
+    taskInput.text = ""
+    controller.hide()
+  }
   function toggle() { if (opened) close(); else open() }
   function switchPanel(direction) { return bar && typeof bar.switchPanelFrom === "function" ? bar.switchPanelFrom(barIdentity, direction) : false }
 
@@ -221,9 +237,13 @@ Panel {
             width: parent.width - priorityButton.width - stageButton.width - parent.spacing * 2
             foreground: root.fg; accent: root.accent
             placeholderText: root.addStage === "idea" ? "Capture an idea…" : (root.addStage === "later" ? "Add to Later…" : (root.addPriority ? "Add a Big 3 priority…" : "Quick-add a task…"))
-            onAccepted: {
-              if (root.store && text.trim()) root.store.addTask(text, root.addPriority, root.addStage, "")
-              text = ""
+            onAccepted: root.completeCapture()
+            Keys.priority: Keys.BeforeItem
+            Keys.onPressed: function(event) {
+              if (event.key === Qt.Key_Escape) {
+                root.cancelCapture()
+                event.accepted = true
+              }
             }
           }
           Rectangle {
@@ -270,7 +290,7 @@ Panel {
           Timer { id: reminderRefresh; interval: 500; onTriggered: if (root.store) root.store.refreshReminders() }
         }
 
-        Text { width: parent.width; text: "a task · i idea · / search · f focus · r reset · c clear completed"; color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.38); font.family: root.family; font.pixelSize: Style.font.caption; elide: Text.ElideRight }
+        Text { width: parent.width; text: "a/q task · i idea · Enter save + close · Esc cancel + close · / search · f focus"; color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.38); font.family: root.family; font.pixelSize: Style.font.caption; elide: Text.ElideRight }
       }
     }
   }
