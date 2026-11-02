@@ -1,14 +1,15 @@
-# Daily Hub for Omarchy
+# Omarchy Daily Hub
 
-A calm productivity panel for the Omarchy Quattro bar. Daily Hub brings daily
+A calm productivity panel for the Omarchy Quattro bar. Omarchy Daily Hub brings daily
 priorities, tasks, focus sessions, reminders, and day progress into one place
 while leaving specialist tools such as Screen Time and media controls separate.
 
-Daily Hub is currently under active development. Version `0.1.0` includes:
+Omarchy Daily Hub is currently under active development. Version `0.1.0` includes:
 
 - daily tasks and priority marking;
 - automatic carry-over of unfinished tasks;
 - a dedicated Big 3, Today list, and Later backlog;
+- a low-friction idea inbox that can promote ideas into Later or Today;
 - task descriptions, editing, reordering, search, and filtering;
 - quick movement between Today and Later with visible carry counts;
 - a focus and break timer with desktop notifications;
@@ -22,24 +23,30 @@ Daily Hub is currently under active development. Version `0.1.0` includes:
 Once the first public release is available:
 
 ```sh
-omarchy plugin add https://github.com/DevBrightly/omarchy-daily-hub.git --enable
+omarchy plugin add https://github.com/DevBrightly/daily-hub.git --enable
 ```
 
-Daily Hub stores its local state in
+Omarchy Daily Hub stores its local state in
 `~/.local/share/br-daily-hub/state.json`. Removing or updating the plugin does
 not delete that file.
 
 ## Usage
 
-Click the Daily Hub bar item to open the panel. Middle-click it to start or
-pause the timer. Inside the panel:
+Press `Super+Shift+Q` from any application to open or close Daily Hub, or click its
+bar item. Middle-click the bar item to start or pause the timer. Inside the panel:
 
-- `a` or `q` focuses the quick-add input;
+- `a` or `q` starts a Today-task capture;
+- `i` starts an Idea capture;
+- `Enter` saves a non-empty quick capture and closes the panel;
+- `Escape` discards a quick-capture draft and closes the panel;
 - `/` focuses task search;
 - `f` starts or pauses the timer;
 - `r` resets the current timer;
 - `c` clears completed tasks;
-- `Escape` closes the panel.
+- `Escape` closes the panel when not capturing.
+
+Closing Daily Hub by any route discards an unsaved quick-capture draft. Search,
+task editing, and reminder inputs keep their existing Enter behavior.
 
 ## Configure
 
@@ -47,13 +54,13 @@ Use **Setup → Bar** to configure the day boundaries, timer lengths, screen-tim
 guide, and bar label. The widget can also be moved with:
 
 ```sh
-omarchy bar move io.github.devbrightly.daily-hub --section center
+omarchy bar move devbrightly.omarchy-daily-hub --section center
 ```
 
 ## Remove
 
 ```sh
-omarchy plugin remove io.github.devbrightly.daily-hub
+omarchy plugin remove devbrightly.omarchy-daily-hub
 ```
 
 The plugin runs inside `omarchy-shell` with your user permissions, like all

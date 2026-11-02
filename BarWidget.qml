@@ -6,7 +6,7 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "io.github.devbrightly.daily-hub"
+  moduleName: "devbrightly.omarchy-daily-hub"
 
   readonly property int dayStart: Number(setting("dayStart", 8))
   readonly property int dayEnd: Number(setting("dayEnd", 22))
@@ -40,14 +40,14 @@ BarWidget {
     focusMinutes: root.focusMinutes
     breakMinutes: root.breakMinutes
     onFocusFinished: function(mode) {
-      Util.execArgv(["omarchy-notification-send", "--app-name", "Daily Hub", mode === "focus" ? "Focus complete" : "Break complete", mode === "focus" ? "Time to take a short break." : "Ready for another focus session?"])
+      Util.execArgv(["omarchy-notification-send", "--app-name", "Omarchy Daily Hub", mode === "focus" ? "Focus complete" : "Break complete", mode === "focus" ? "Time to take a short break." : "Ready for another focus session?"])
     }
   }
 
   Loader { id: panelLoader; active: true; source: Qt.resolvedUrl("Panel.qml"); visible: false; onLoaded: { root.inject(); Qt.callLater(root.inject) } }
 
   IpcHandler {
-    target: "io.github.devbrightly.daily-hub"
+    target: "devbrightly.omarchy-daily-hub"
     function open(): void { root.open() }
     function close(): void { root.close() }
     function toggle(): void { root.togglePanel() }
@@ -64,7 +64,7 @@ BarWidget {
     hasVisualContent: true
     horizontalMargin: 7
     fixedWidth: root.vertical ? -1 : Math.round(content.implicitWidth + Style.spaceReal(7) * 2)
-    tooltipText: "Daily Hub · " + store.stats.done + "/" + store.stats.total + " done · " + store.pomodoroText + " · " + store.screenLabel + " screen time"
+    tooltipText: "Omarchy Daily Hub · " + store.stats.done + "/" + store.stats.total + " done · " + store.pomodoroText + " · " + store.screenLabel + " screen time"
     onPressed: function(b) { if (b === Qt.MiddleButton) store.toggleFocus(); else root.togglePanel() }
 
     Row {

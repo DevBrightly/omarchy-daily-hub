@@ -2,3 +2,4 @@
 *.jsc
 *.log
 .DS_Store
+/docs
